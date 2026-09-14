@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
 const path = require('path');
+const fs = require('fs');
 const dotenv = require('dotenv');
 
 dotenv.config({ path: path.resolve(__dirname, '.env') });
@@ -23,19 +24,54 @@ const PORT = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(morgan('dev'));
+if (process.env.NODE_ENV !== 'test') {
+  app.use(morgan('dev'));
+}
 
-// Serve Frontend Static Assets
-app.use(express.static(path.join(__dirname, '../frontend')));
+// Auto-connect DB middleware for serverless & regular runs
+app.use(async (req, res, next) => {
+  try {
+    await connectDB();
+  } catch (err) {
+    // Non-fatal, routes handle fallback
+  }
+  next();
+});
+
+// Serve Frontend Static Assets if local directory exists
+const frontendPath = path.join(__dirname, '../frontend');
+if (fs.existsSync(frontendPath)) {
+  app.use(express.static(frontendPath));
+}
 
 // Health & Status Check Endpoint
 app.get('/api/health', (req, res) => {
   const dbStatus = getStatus();
   res.json({
     status: 'online',
-    workshop: 'Sri Vellingiri Engineering Works',
+    workshop: 'Sri Vellingiri Engineering Works API',
     timestamp: new Date(),
     database: dbStatus,
+  });
+});
+
+// Root / Welcome Endpoint
+app.get('/', (req, res) => {
+  const indexPath = path.join(frontendPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  res.json({
+    status: 'online',
+    service: 'Sri Vellingiri Engineering Works Backend API',
+    database: getStatus(),
+    endpoints: {
+      health: '/api/health',
+      services: '/api/services',
+      gallery: '/api/gallery',
+      serviceRequests: '/api/service-requests',
+      customers: '/api/customers'
+    }
   });
 });
 
@@ -45,17 +81,21 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/service-requests', serviceRequestRoutes);
 app.use('/api/customers', customerRoutes);
 
-// Fallback for direct index navigation
-app.get('*', (req, res) => {
+// Fallback Route
+app.use('*', (req, res) => {
   if (req.path.startsWith('/api')) {
     return res.status(404).json({ success: false, message: 'API endpoint not found' });
   }
-  res.sendFile(path.join(__dirname, '../frontend/index.html'));
+  const indexPath = path.join(frontendPath, 'index.html');
+  if (fs.existsSync(indexPath)) {
+    return res.sendFile(indexPath);
+  }
+  res.status(404).json({ success: false, message: 'Not Found' });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
-  console.error('Unhandled server error:', err.stack);
+  console.error('Unhandled server error:', err);
   res.status(500).json({
     success: false,
     message: 'Internal server error',
@@ -84,22 +124,23 @@ async function autoSeedIfEmpty() {
   }
 }
 
-// Start Server immediately and connect to MongoDB in background
-const server = app.listen(PORT, () => {
-  console.log(`====================================================`);
-  console.log(`🚀 Sri Vellingiri Engineering Works Server is live!`);
-  console.log(`📍 Local URL: http://localhost:${PORT}`);
-  console.log(`📊 API Health: http://localhost:${PORT}/api/health`);
-  console.log(`====================================================`);
+// Only listen locally (not during Vercel serverless executions)
+if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`====================================================`);
+    console.log(`🚀 Sri Vellingiri Engineering Works Server is live!`);
+    console.log(`📍 Local URL: http://localhost:${PORT}`);
+    console.log(`📊 API Health: http://localhost:${PORT}/api/health`);
+    console.log(`====================================================`);
 
-  // Asynchronous DB connection
-  connectDB().then((conn) => {
-    if (conn) {
-      autoSeedIfEmpty();
-    }
-  }).catch((err) => {
-    console.warn('DB Connection background note:', err.message);
+    connectDB().then((conn) => {
+      if (conn) {
+        autoSeedIfEmpty();
+      }
+    }).catch((err) => {
+      console.warn('DB Connection background note:', err.message);
+    });
   });
-});
+}
 
 module.exports = app;

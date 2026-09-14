@@ -1,23 +1,34 @@
 const mongoose = require('mongoose');
 
-let isConnected = false;
+let cachedPromise = null;
 
 const connectDB = async () => {
+  // If already connected, reuse existing connection
+  if (mongoose.connection.readyState === 1) {
+    return mongoose.connection;
+  }
+
+  // If connection is in progress, wait for it
+  if (mongoose.connection.readyState === 2 && cachedPromise) {
+    return cachedPromise;
+  }
+
   const connUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/sri_vellingiri_db';
-  console.log(`Attempting MongoDB connection at: ${connUri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@')}`);
+  const maskedUri = connUri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@');
+  console.log(`Connecting to MongoDB: ${maskedUri}`);
 
   try {
-    const conn = await mongoose.connect(connUri, {
-      serverSelectionTimeoutMS: 10000,
+    cachedPromise = mongoose.connect(connUri, {
+      serverSelectionTimeoutMS: 8000,
+      connectTimeoutMS: 10000,
     });
 
-    isConnected = true;
+    const conn = await cachedPromise;
     console.log(`✅ MongoDB Connected successfully: ${conn.connection.host}/${conn.connection.name}`);
     return conn;
   } catch (error) {
-    isConnected = false;
-    console.warn(`⚠️ MongoDB connection note: ${error.message}`);
-    console.warn(`ℹ️ The workshop server is operating with built-in data cache and will automatically reconnect when MongoDB is started.`);
+    cachedPromise = null;
+    console.warn(`⚠️ MongoDB connection warning: ${error.message}`);
     return null;
   }
 };
@@ -28,7 +39,7 @@ const getStatus = () => {
   return {
     isConnected: state === 1,
     state: stateNames[state] || 'disconnected',
-    host: mongoose.connection.host || 'localhost',
+    host: mongoose.connection.host || 'unknown',
     name: mongoose.connection.name || 'sri_vellingiri_db'
   };
 };

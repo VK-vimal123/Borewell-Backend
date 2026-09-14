@@ -3,38 +3,54 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const path = require('path');
 const fs = require('fs');
+const os = require('os');
 const multer = require('multer');
 const Gallery = require('../models/Gallery');
 const { galleryData } = require('../seeds/seedData');
 
-// Ensure upload and data directories exist
-const uploadDir = path.join(__dirname, '../../frontend/assets/images/uploads');
-if (!fs.existsSync(uploadDir)) {
-  fs.mkdirSync(uploadDir, { recursive: true });
+// Safe directories check (handles serverless read-only file systems)
+let uploadDir = path.join(__dirname, '../../frontend/assets/images/uploads');
+let dataDir = path.join(__dirname, '../data');
+
+try {
+  if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+  }
+} catch (e) {
+  uploadDir = path.join(os.tmpdir(), 'borewell-uploads');
+  try { if (!fs.existsSync(uploadDir)) fs.mkdirSync(uploadDir, { recursive: true }); } catch (err) {}
 }
 
-const dataDir = path.join(__dirname, '../data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir, { recursive: true });
+try {
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir, { recursive: true });
+  }
+} catch (e) {
+  dataDir = os.tmpdir();
 }
 
 const storeFilePath = path.join(dataDir, 'gallery_store.json');
+let inMemoryStore = null;
 
 // Persistent storage helper functions
 function loadGalleryStore() {
+  if (inMemoryStore && inMemoryStore.length > 0) {
+    return inMemoryStore;
+  }
   try {
     if (fs.existsSync(storeFilePath)) {
       const data = fs.readFileSync(storeFilePath, 'utf8');
       const parsed = JSON.parse(data);
       if (Array.isArray(parsed) && parsed.length > 0) {
+        inMemoryStore = parsed;
         return parsed;
       }
     }
   } catch (err) {
-    console.error('Error reading gallery_store.json:', err.message);
+    // Read fallback
   }
 
-  // Initialize from seedData if not existing or invalid
+  // Initialize from seedData
   const initial = galleryData.map((item, idx) => ({
     ...item,
     _id: 'seed_' + (idx + 1),
@@ -42,15 +58,17 @@ function loadGalleryStore() {
     createdAt: item.createdAt || new Date(Date.now() - idx * 3600000).toISOString()
   }));
 
+  inMemoryStore = initial;
   saveGalleryStore(initial);
   return initial;
 }
 
 function saveGalleryStore(items) {
+  inMemoryStore = items;
   try {
     fs.writeFileSync(storeFilePath, JSON.stringify(items, null, 2), 'utf8');
   } catch (err) {
-    console.error('Error saving gallery_store.json:', err.message);
+    // Non-fatal if read-only
   }
 }
 
@@ -143,7 +161,7 @@ router.get('/', async (req, res) => {
       }
     }
 
-    // Load from persistent file store
+    // Load from persistent file / memory store
     let store = loadGalleryStore();
     if (category && category !== 'all') {
       store = store.filter(item => matchesCategory(item.category, category));
@@ -204,7 +222,7 @@ router.post('/upload', upload.single('photo'), async (req, res) => {
       createdAt: new Date().toISOString()
     };
 
-    // 1. Immediately save to persistent JSON disk storage
+    // 1. Save to in-memory/file store
     const store = loadGalleryStore();
     store.unshift(itemObj);
     saveGalleryStore(store);
@@ -254,7 +272,7 @@ router.put('/:id', async (req, res) => {
         : description;
     }
 
-    // 1. Update persistent JSON disk store
+    // 1. Update in-memory / JSON store
     const store = loadGalleryStore();
     const index = store.findIndex(item => String(item._id) === String(id) || String(item.id) === String(id));
     let updatedItem = null;
@@ -290,7 +308,7 @@ router.delete('/:id', async (req, res) => {
   try {
     const { id } = req.params;
 
-    // 1. Remove from persistent JSON disk store
+    // 1. Remove from in-memory / JSON store
     const store = loadGalleryStore();
     const index = store.findIndex(item => String(item._id) === String(id) || String(item.id) === String(id));
     let deletedItem = null;
@@ -299,9 +317,7 @@ router.delete('/:id', async (req, res) => {
       deletedItem = store[index];
       if (deletedItem.imageUrl && deletedItem.imageUrl.startsWith('assets/images/uploads/')) {
         const filePath = path.join(__dirname, '../../frontend', deletedItem.imageUrl);
-        if (fs.existsSync(filePath)) {
-          try { fs.unlinkSync(filePath); } catch (e) { /* ignore */ }
-        }
+        try { if (fs.existsSync(filePath)) fs.unlinkSync(filePath); } catch (e) {}
       }
       store.splice(index, 1);
       saveGalleryStore(store);
