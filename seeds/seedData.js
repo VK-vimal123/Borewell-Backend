@@ -205,11 +205,11 @@ const sampleCustomers = [
 ];
 
 async function seedDatabase() {
-  const mongoUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sri_vellingiri_db';
-  console.log(`Connecting to MongoDB for seeding: ${mongoUri}`);
+  const mongoUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/sri_vellingiri_db';
+  console.log(`Connecting to MongoDB for seeding: ${mongoUri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@')}`);
 
   try {
-    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 3000 });
+    await mongoose.connect(mongoUri, { serverSelectionTimeoutMS: 10000 });
     console.log('✅ MongoDB connected successfully for seed script.');
 
     await Service.deleteMany({});

@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 let isConnected = false;
 
 const connectDB = async () => {
-  const connUri = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/sri_vellingiri_db';
-  console.log(`Attempting MongoDB connection at: ${connUri}`);
+  const connUri = process.env.MONGODB_URI || process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/sri_vellingiri_db';
+  console.log(`Attempting MongoDB connection at: ${connUri.replace(/\/\/([^:]+):([^@]+)@/, '//$1:****@')}`);
 
   try {
     const conn = await mongoose.connect(connUri, {
-      serverSelectionTimeoutMS: 2500, // Quick timeout so server is responsive
+      serverSelectionTimeoutMS: 10000,
     });
 
     isConnected = true;
