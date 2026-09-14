@@ -1,0 +1,128 @@
+[
+  {
+    "_id": "work_1789358833449_6481",
+    "title": {
+      "en": "Drill Rod Threading & Quality Inspection Services",
+      "ta": "4.5\" மற்றும் 6\" டிரில்லிங் ராடு த்ரெட் கட்டிங் & ஆய்வு பணிகள்",
+      "hi": "4.5\" और 6\" ड्रिलिंग रॉड थ्रेडिंग एवं गुणवत्ता निरीक्षण"
+    },
+    "category": "drilling_rods",
+    "imageUrl": "assets/images/uploads/rod2.png",
+    "description": {
+      "en": "High-precision threading, machining, and thread inspection for 4.5\" and 6\" industrial drill rods to ensure secure rig connections and optimal performance.",
+      "ta": "4.5\" மற்றும் 6\" தொழில்துறை டிரில்லிங் ராடுகளுக்கு உயர்தர லேத் த்ரெட்டிங் மற்றும் துல்லிய பரிசோதனை பணிகள்.",
+      "hi": "4.5\" और 6\" औद्योगिक ड्रिलिंग रॉड्स के लिए हाई-प्रिसिजन थ्रेडिंग, मशीनिंग और थ्रेड इंस्पेक्शन कार्य।"
+    },
+    "displayOrder": 0,
+    "isActive": true,
+    "createdAt": "2026-09-14T04:07:13.449Z"
+  },
+  {
+    "_id": "work_1789302631770_5857",
+    "title": {
+      "en": "Heavy-Duty Truck-Mounted DTH Rig - Deep Borewell Operations",
+      "ta": "கனரக லாரி போர்வெல் டி.டி.எச் ரிக் - ஆழ்துளை கிணறு பணிகள்",
+      "hi": "हैवी-ड्यूटी ट्रक-माउंटेड डीटीएच रिग - गहरे बोरवेल कार्य"
+    },
+    "category": "rig",
+    "imageUrl": "assets/images/uploads/work-1789302631766-364697708.jpeg",
+    "description": {
+      "en": "High-pressure Down-The-Hole (DTH) pneumatic hammer drilling and rotary compression system for penetrating hard rock formations and accessing deep underground water aquifers efficiently.",
+      "ta": "கடின பாறைகளை துளைக்கும் உயர் அழுத்த டி.டி.எச் நியூமேடிக் சுத்தியல் மற்றும் ரோட்டரி அமைப்பு முழுமையான பராமரிப்பு.",
+      "hi": "कठिन चट्टानों को भेदने और गहरे भूजल तक पहुंचने के लिए हाई-प्रेशर डीटीएच हैमर एवं रोटरी सिस्टम मेंटेनेंस।"
+    },
+    "displayOrder": 0,
+    "isActive": true,
+    "createdAt": "2026-09-13T12:30:31.770Z"
+  },
+  {
+    "_id": "work_1789302419331_3762",
+    "title": {
+      "en": "Drill Rods Thread Straightening & Machining",
+      "ta": "டிரில்லிங் ராடுகள் த்ரெட் சீரமைப்பு மற்றும் மெஷினிங்",
+      "hi": "ड्रिलिंग रॉड्स थ्रेड स्ट्रेटनिंग एवं लेथ मशीनिंग"
+    },
+    "category": "drilling_rods",
+    "imageUrl": "assets/images/uploads/work-1789302419316-150599868.jpeg",
+    "description": {
+      "en": "Heavy lathe turning, API thread recutting, and hydraulic straightening for drill pipes.",
+      "ta": "டிரில்லிங் பைப்புகளுக்கான கனரக லேத் டர்னிங், த்ரெட் சீரமைப்பு மற்றும் ஹைட்ராலிக் நேராக்கும் பணிகள்.",
+      "hi": "ड्रिलिंग पाइपों के लिए हैवी लेथ मशीनिंग, एपीआई थ्रेड री-कटिंग और हाइड्रोलिक सीधा करने का कार्य।"
+    },
+    "displayOrder": 0,
+    "isActive": true,
+    "createdAt": "2026-09-13T12:26:59.332Z"
+  },
+  {
+    "_id": "work_uploaded_1",
+    "title": {
+      "en": "Heavy-Duty Borewell Rig Setup & Inspection",
+      "ta": "கனரக போர்வெல் ரிக் ஆய்வு மற்றும் பணித்தளம்",
+      "hi": "हैवी-ड्यूटी बोरवेल रिग सेटअप एवं निरीक्षण"
+    },
+    "category": "rig",
+    "imageUrl": "assets/images/uploads/work-1789297763205-229611636.jpeg",
+    "description": {
+      "en": "Full operational testing, mechanical maintenance, and mast alignment completed.",
+      "ta": "முழுமையான செயல்பாடு பரிசோதனை, மெக்கானிக்கல் சர்வீஸ் மற்றும் மாஸ்ட் அலைன்மென்ட் பணி.",
+      "hi": "पूर्ण परिचालन परीक्षण, यांत्रिक रखरखाव और मास्ट संरेखण पूर्ण।"
+    },
+    "displayOrder": 0,
+    "isActive": true,
+    "createdAt": "2026-09-13T11:09:23.205Z"
+  },
+  {
+    "_id": "seed_1",
+    "title": {
+      "en": "Heavy-Duty Lathe Turning Area",
+      "ta": "கனரக லேத் டர்னிங் பகுதி",
+      "hi": "हैवी लेथ टर्निंग सेक्शन"
+    },
+    "category": "workshop",
+    "imageUrl": "assets/images/gallery-lathe-1.png",
+    "description": {
+      "en": "Precision machining of rotary head drive spindle on our heavy bed lathe.",
+      "ta": "ரோட்டரி ஹெட் டிரைவ் ஸ்பிண்டில் துல்லியமாக மெஷினிங் செய்தல்.",
+      "hi": "रोटरी हेड ड्राइव स्पिंडल की प्रिसिजन मशीनिंग।"
+    },
+    "displayOrder": 1,
+    "isActive": true,
+    "createdAt": "2026-09-13T10:00:00.000Z"
+  },
+  {
+    "_id": "seed_2",
+    "title": {
+      "en": "Rig Mast Lattice Structural Welding",
+      "ta": "ரிக் மாஸ்ட் கட்டமைப்பு வெல்டிங்",
+      "hi": "रिग मास्ट संरचनात्मक वेल्डिंग"
+    },
+    "category": "welding",
+    "imageUrl": "assets/images/gallery-welding-1.png",
+    "description": {
+      "en": "Reinforcing heavy cross braces on a 40-ft drill rig mast with high-tensile arc welding.",
+      "ta": "40 அடி ரிக் மாஸ்டில் உயர்தர ஆர்க் வெல்டிங் மூலம் குறுக்கு பிரேஸ்களை வலுப்படுத்துதல்.",
+      "hi": "40-फुट ड्रिल रिग मास्ट पर हाई-टेंसाइल आर्क वेल्डिंग द्वारा स्ट्रक्चरल मजबूती।"
+    },
+    "displayOrder": 2,
+    "isActive": true,
+    "createdAt": "2026-09-13T09:00:00.000Z"
+  },
+  {
+    "_id": "seed_6",
+    "title": {
+      "en": "Workshop Machine Shop & Tooling Bay",
+      "ta": "பட்டறை இயந்திர தளம் மற்றும் டூலிங் பகுதி",
+      "hi": "वर्कशॉप मशीन शॉप फ्लोर"
+    },
+    "category": "workshop",
+    "imageUrl": "assets/images/Complete Borewel/resent1.png",
+    "description": {
+      "en": "Spacious workshop bay equipped with overhead crane, boring bar, and milling tools.",
+      "ta": "ஓவர்ஹெட் கிரேன், போரிங் மற்றும் மில்லிங் வசதிகள் கொண்ட விசாலமான பட்டறை தளம்.",
+      "hi": "ओवरहेड क्रेन और बोरिंग सुविधाओं से युक्त विस्तृत वर्कशॉप फ्लोर।"
+    },
+    "displayOrder": 6,
+    "isActive": true,
+    "createdAt": "2026-09-13T05:00:00.000Z"
+  }
+]
