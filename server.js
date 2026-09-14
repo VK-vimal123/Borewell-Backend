@@ -49,7 +49,7 @@ app.get('/api/health', (req, res) => {
   const dbStatus = getStatus();
   res.json({
     status: 'online',
-    workshop: 'Sri Vellingiri Engineering Works API',
+    workshop: 'Sri Vellingiri Nathan Borewells API',
     timestamp: new Date(),
     database: dbStatus,
   });
@@ -63,7 +63,7 @@ app.get('/', (req, res) => {
   }
   res.json({
     status: 'online',
-    service: 'Sri Vellingiri Engineering Works Backend API',
+    service: 'Sri Vellingiri Nathan Borewells Backend API',
     database: getStatus(),
     endpoints: {
       health: '/api/health',
@@ -81,24 +81,20 @@ app.use('/api/gallery', galleryRoutes);
 app.use('/api/service-requests', serviceRequestRoutes);
 app.use('/api/customers', customerRoutes);
 
-// Fallback Route
-app.use('*', (req, res) => {
-  if (req.path.startsWith('/api')) {
-    return res.status(404).json({ success: false, message: 'API endpoint not found' });
-  }
-  const indexPath = path.join(frontendPath, 'index.html');
-  if (fs.existsSync(indexPath)) {
-    return res.sendFile(indexPath);
-  }
-  res.status(404).json({ success: false, message: 'Not Found' });
+// 404 Handler for undefined API routes
+app.use('/api/*', (req, res) => {
+  res.status(404).json({
+    success: false,
+    message: `API endpoint ${req.originalUrl} not found. Please check our API docs.`
+  });
 });
 
 // Global Error Handler
 app.use((err, req, res, next) => {
   console.error('Unhandled server error:', err);
-  res.status(500).json({
+  res.status(err.status || 500).json({
     success: false,
-    message: 'Internal server error',
+    message: err.message || 'Internal Server Error',
     error: process.env.NODE_ENV === 'development' ? err.message : undefined,
   });
 });
@@ -128,7 +124,7 @@ async function autoSeedIfEmpty() {
 if (!process.env.VERCEL && process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
     console.log(`====================================================`);
-    console.log(`🚀 Sri Vellingiri Engineering Works Server is live!`);
+    console.log(`🚀 Sri Vellingiri Nathan Borewells Server is live!`);
     console.log(`📍 Local URL: http://localhost:${PORT}`);
     console.log(`📊 API Health: http://localhost:${PORT}/api/health`);
     console.log(`====================================================`);
